@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import skrf as rf
 import imageio.v2 as imageio
 import math
+import cmath
 # %%
 #define variables
 
@@ -88,8 +89,8 @@ for target_freq in freqs:
     z_time_values = []
     s_mag_values = []
     mob_values = []
-    for col in range(1,5):
-        for row in range(1,5):
+    for col in range(1,6):
+        for row in range(1,6):
             filename = f"{row}-{col}.s1p"
             file_path = os.path.join(dataset_dir, filename)
             if os.path.exists(file_path):
@@ -105,6 +106,8 @@ for target_freq in freqs:
                 z_time_data = z_data[idx_z]
                 capac_data = solve_capac(f_data,z_time_data)
                 capac_data_i = solve_capac_i(mag_data,z_im_data)
+                capac_data_real = capac_data_i.real
+                capac_data_real = capac_data_real.astype('float64')
                 mob_data = solve_mobility(abs(capac_data_i.real))
                 cols.append(col)
                 rows.append(row)
@@ -112,7 +115,7 @@ for target_freq in freqs:
                 z_time_values.append(z_time_data)
                 s_mag_values.append(mag_data)
                 capac_values.append(capac_data)
-                capac_values_i.append(capac_data_i.real)
+                capac_values_i.append(capac_data_real)
                 mob_values.append(mob_data)
             else:
                 print(f"{filename} missing")
@@ -121,14 +124,14 @@ for target_freq in freqs:
     max_capac_i = max(capac_values_i)
         
     plt.figure(figsize=(8, 8))
-    plt.hist2d(cols, rows, weights=capac_values_i, bins=(np.arange(0.5, 12.5), np.arange(0.5, 12.5)),
+    plt.hist2d(cols, rows, weights=capac_values_i, bins=(np.arange(0.5, 6.5), np.arange(0.5, 6.5)),
                 cmap='viridis', vmin=min_capac_i, vmax=max_capac_i)
     plt.colorbar(label='Capacitance (F)')
     plt.xlabel('Column')
     plt.ylabel('Row')
     plt.title(f'2D Histogram of Capacitance at {target_freq/1e9:.2f} GHz')
-    plt.xticks(np.arange(1, 12))
-    plt.yticks(np.arange(1, 12))
+    plt.xticks(np.arange(1, 6))
+    plt.yticks(np.arange(1, 6))
     plt.gca().invert_yaxis()
     plt.savefig(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Capacitance/frame_{int(target_freq/1e6)}.png')
     frames.append(imageio.imread(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Capacitance/frame_{int(target_freq/1e6)}.png'))
@@ -140,36 +143,18 @@ for target_freq in freqs:
     max_capac = max(capac_values)
         
     plt.figure(figsize=(8, 8))
-    plt.hist2d(cols, rows, weights=capac_values, bins=(np.arange(0.5, 12.5), np.arange(0.5, 12.5)),
+    plt.hist2d(cols, rows, weights=capac_values, bins=(np.arange(0.5, 6.5), np.arange(0.5, 6.5)),
                 cmap='viridis', vmin=min_capac, vmax=max_capac)
     plt.colorbar(label='Capacitance (F)')
     plt.xlabel('Column')
     plt.ylabel('Row')
     plt.title(f'2D Histogram of Capacitance at {target_freq/1e9:.2f} GHz')
-    plt.xticks(np.arange(1, 12))
-    plt.yticks(np.arange(1, 12))
+    plt.xticks(np.arange(1, 6))
+    plt.yticks(np.arange(1, 6))
     plt.gca().invert_yaxis()
     plt.savefig(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Capacitance_v2/frame_{int(target_freq/1e6)}.png')
     frames_c.append(imageio.imread(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Capacitance_v2/frame_{int(target_freq/1e6)}.png'))
     plt.close()
         
     imageio.mimsave('/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Capacitance_v2/2D_Cap_histogram.gif', frames_c, duration=duration_per_frame)
-        
-    min_z = min(z_im_values)
-    max_z = max(z_im_values)
-
-    plt.figure(figsize=(8, 8))
-    plt.hist2d(cols, rows, weights=z_im_values, bins=(np.arange(0.5, 12.5), np.arange(0.5, 12.5)),
-                cmap='viridis', vmin=min_z, vmax=max_z)
-    plt.colorbar(label='Impedance (Ohm)')
-    plt.xlabel('Column')
-    plt.ylabel('Row')
-    plt.title(f'2D Histogram of Impedance at {target_freq/1e9:.2f} GHz')
-    plt.xticks(np.arange(1, 12))
-    plt.yticks(np.arange(1, 12))
-    plt.gca().invert_yaxis()
-    plt.savefig(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Impedance/frame_z_{int(target_freq/1e6)}.png')
-    frames_z.append(imageio.imread(f'/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Impedance/frame_z_{int(target_freq/1e6)}.png'))
-    plt.close()
-    
-    imageio.mimsave('/home/ori/Documents/Work/NanoVNA/Mapping/data_dump/Impedance/2D_Z_histogram.gif', frames_z, duration=duration_per_frame)
+# %%
