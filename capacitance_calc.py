@@ -17,11 +17,15 @@ open_dcgate = open_dc.time_gate(center=5, span=7, t_unit='ns')
 
 #for mobility
 eps_s = 9.3203
+#eps_ox = 3.4 #hBN
+#eps_s = 6.9 #gold
 eps_ox = 3.9
 T_k = 300 #Kelvin
 t_ox = 300e-6 #micrometer
 k_b = 1.380649e-23 #Joule/Kelvin
 t_gr = 0.345e-9 #nanometer
+#t_gold = 70e-9 #nanometer
+#t_hBN = 60e-9 #nanometer
 #t_gr = 0.65e-9 #nanometer
 q_c = 1.60217663e-19 #Coulombs/elementary charge
 r_tip = 0.5e-6 #nanometer/tip radius

@@ -1,10 +1,7 @@
 #%%
 import numpy as np
 from matplotlib import pyplot as plt
-import matplotlib
 import skrf as rf
-from skrf import NetworkSet
-from scipy import signal
 import math
 
 #%%
